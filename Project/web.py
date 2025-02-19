@@ -3,7 +3,7 @@ import pickle  # Pre-trained model loading
 import streamlit as st  # Web app
 
 # Define the base path where web.py is located
-base_path = r"C:\Users\vedab\Microsoft_AI\Project"
+base_path = r"C:/Users/vedab/Microsoft_AI/Project"
 
 # Define the paths to the model files inside "training_models"
 model_dir = os.path.join(base_path, "training_models")
