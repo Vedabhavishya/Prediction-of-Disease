@@ -1,44 +1,60 @@
 import os
-import pickle # pre trained model loading
-import streamlit as st    # web app
+import pickle  # Pre-trained model loading
+import streamlit as st  # Web app
 
+# Define the base path where web.py is located
+base_path = r"C:\Users\vedab\Microsoft_AI\Project"
+
+# Define the paths to the model files inside "training_models"
+model_dir = os.path.join(base_path, "training_models")
+
+diabetes_model_path = os.path.join(model_dir, "diabetes_models.sav")
+heart_disease_model_path = os.path.join(model_dir, "heart_models.sav")
+parkinsons_model_path = os.path.join(model_dir, "parkinson_models.sav")
+
+# Load models
+diabetes_model = pickle.load(open(diabetes_model_path, 'rb'))
+heart_disease_model = pickle.load(open(heart_disease_model_path, 'rb'))
+parkinsons_model = pickle.load(open(parkinsons_model_path, 'rb'))
+
+# Streamlit UI
 st.set_page_config(page_title='Prediction of Disease Outbreaks',
                    layout='wide',
                    page_icon="🧑‍⚕️")
-
-diabetes_model= pickle.load(open(r"C:\Users\vedab\Microsoft_AI\Project\training_models\diabetes_models.sav",'rb'))
-heart_disease_model=pickle.load(open(r"C:\Users\vedab\Microsoft_AI\Project\training_models\best_heart_disease_model.sav",'rb'))
-parkinsons_model = pickle.load(open(r"C:\Users\vedab\Microsoft_AI\Project\training_models\parkinson_models.sav",'rb'))
 
 st.sidebar.title('Prediction of Disease Outbreak System')
 selected = st.sidebar.radio("Choose a prediction model:", ['Diabetes Prediction', 'Heart Disease Prediction', 'Parkinsons Prediction'])
 
 if selected == 'Diabetes Prediction':
     st.title('Diabetes Prediction using ML')
-    col1,col2,col3 = st.columns(3)
+    col1, col2, col3 = st.columns(3)
     with col1:
-        Pregnancies= st.text_input('Number of Pregnancies')
+        Pregnancies = st.text_input('Number of Pregnancies')
     with col2:
-        Glucose= st.text_input('Glucose level')
+        Glucose = st.text_input('Glucose level')
     with col3:
-        Bloodpressure= st.text_input('Blood Pressure value')
+        BloodPressure = st.text_input('Blood Pressure value')
     with col1:
         SkinThickness = st.text_input('Skin Thickness value')
     with col2:
-        Insulin= st.text_input('Insulin level')
+        Insulin = st.text_input('Insulin level')
     with col3:
-        BMI = st.text_input('BMI  value')
+        BMI = st.text_input('BMI value')
     with col1:
-        DiabetesPedigreeFunction= st.text_input('Diabetes Pedigree Function value')
+        DiabetesPedigreeFunction = st.text_input('Diabetes Pedigree Function value')
     with col2:
-        Age= st.text_input('Age of the person')
+        Age = st.text_input('Age of the person')
+
     diab_diagnosis = ''
     if st.button('Diabetes Test Result'):
-        user_input=[Pregnancies, Glucose, Bloodpressure, SkinThickness, Insulin,
-                        BMI, DiabetesPedigreeFunction, Age]
-        user_input= [float(x) for x in user_input]
-        diab_prediction= diabetes_model.predict([user_input])
-        diab_diagnosis= 'The person is diabetic' if diab_prediction[0]==1 else 'The person is not diabetic'
+        try:
+            user_input = [float(Pregnancies), float(Glucose), float(BloodPressure), float(SkinThickness),
+                          float(Insulin), float(BMI), float(DiabetesPedigreeFunction), float(Age)]
+            diab_prediction = diabetes_model.predict([user_input])
+            diab_diagnosis = 'The person is diabetic' if diab_prediction[0] == 1 else 'The person is not diabetic'
+        except ValueError:
+            st.error("Invalid input! Please enter only numbers.")
+
     st.success(diab_diagnosis)
 
 if selected == 'Heart Disease Prediction':
@@ -70,15 +86,17 @@ if selected == 'Heart Disease Prediction':
         ca = st.text_input('Number of Major Vessels (ca)')
     with col1:
         thal = st.text_input('Thalassemia (thal)')
+
     heart_diagnosis = ''
     if st.button('Heart Disease Test Result'):
-        user_input = [age, sex, cp, trestbps, chol, fbs, restecg, thalach, exang, oldpeak, slope, ca, thal]
         try:
-            user_input = [float(x) if x.strip() != "" else 0.0 for x in user_input]
+            user_input = [float(age), float(sex), float(cp), float(trestbps), float(chol), float(fbs), float(restecg),
+                          float(thalach), float(exang), float(oldpeak), float(slope), float(ca), float(thal)]
+            heart_prediction = heart_disease_model.predict([user_input])
+            heart_diagnosis = 'The person has heart disease' if heart_prediction[0] == 1 else 'The person does not have heart disease'
         except ValueError:
             st.error("Invalid input! Please enter only numbers.")
-        heart_prediction = heart_disease_model.predict([user_input])
-        heart_diagnosis = 'The person has heart disease' if heart_prediction[0] == 1 else 'The person does not have heart disease'
+
     st.success(heart_diagnosis)
 
 if selected == 'Parkinsons Prediction':
@@ -94,13 +112,19 @@ if selected == 'Parkinsons Prediction':
         'Enter detrended fluctuation', 'Enter first spread measure', 'Enter second spread measure',
         'Enter correlation dimension', 'Enter pitch period entropy'
     ]
+
     user_input = []
     for idx, label in enumerate(inputs):
         with (col1 if idx % 3 == 0 else col2 if idx % 3 == 1 else col3):
             user_input.append(st.text_input(label))
+
     parkinsons_diagnosis = ''
     if st.button('Parkinsons Disease Test Result'):
-        user_input = [float(x) for x in user_input]
-        parkinsons_prediction = parkinsons_model.predict([user_input])
-        parkinsons_diagnosis = 'The person has Parkinson’s disease' if parkinsons_prediction[0] == 1 else 'The person does not have Parkinson’s disease'
+        try:
+            user_input = [float(x) for x in user_input]
+            parkinsons_prediction = parkinsons_model.predict([user_input])
+            parkinsons_diagnosis = 'The person has Parkinson’s disease' if parkinsons_prediction[0] == 1 else 'The person does not have Parkinson’s disease'
+        except ValueError:
+            st.error("Invalid input! Please enter only numbers.")
+
     st.success(parkinsons_diagnosis)
