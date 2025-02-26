@@ -7,9 +7,9 @@ st.set_page_config(page_title='Prediction of Disease Outbreaks',
                    layout='wide',
                    page_icon="🧑‍⚕️")
 
-diabetes_model= pickle.load(open(r"C:\Users\vedab\Microsoft_AI\Project\training_models\diabetes_models.sav",'rb'))
-heart_disease_model=pickle.load(open(r"C:\Users\vedab\Microsoft_AI\Project\training_models\best_heart_disease_model.sav",'rb'))
-parkinsons_model = pickle.load(open(r"C:\Users\vedab\Microsoft_AI\Project\training_models\parkinson_models.sav",'rb'))
+diabetes_model= pickle.load(open(r"C:\Users\vedab\our_projects\Microsoft_AI\Project\training_models\diabetes_models.sav",'rb'))
+heart_disease_model=pickle.load(open(r"C:\Users\vedab\our_projects\Microsoft_AI\Project\training_models\best_heart_disease_model.sav",'rb'))
+parkinsons_model = pickle.load(open(r"C:\Users\vedab\our_projects\Microsoft_AI\Project\training_models\parkinson_models.sav",'rb'))
 with st.sidebar:
     selected= option_menu('Prediction of disease outbreak system',
                           ['Diabetes Prediction','Heart Disease Prediction','Parkinsons Prediction'],
